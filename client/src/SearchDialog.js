@@ -14,7 +14,7 @@ import ListItemAvatar from '@mui/material/ListItemAvatar';
 import Avatar from '@mui/material/Avatar';
 import ImageIcon from '@mui/icons-material/Image';
 import PolylineIcon from '@mui/icons-material/Polyline';
-import { styled } from '@mui/material';
+import { Alert, styled } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import Badge from '@mui/material/Badge';
 
@@ -58,6 +58,7 @@ function SearchResultItem(props) {
 export default function SearchDialog(props) {
   const [isPending, setIsPending] = useState(true);
   const [results, setResults] = useState();
+  const [error, setError] = useState();
 
   // const handleClickOpen = useCallback(() => {
   //   setOpen(true);
@@ -88,6 +89,7 @@ export default function SearchDialog(props) {
 
   const fetchResults = useCallback(async () => {
     console.log('fetchResults', props.coordinates);
+    setError(null);
     if (!props.coordinates) { return; }
     const coords = props.coordinates.outer.length ? props.coordinates.outer : props.coordinates.inner;
     console.log('coords', coords, props.coordinates);
@@ -98,8 +100,10 @@ export default function SearchDialog(props) {
 
     const data = await fetch(`${OGSApiEndpoint}/lidar/search?${params}`).then(res => res.json());
     console.log(data);
-    if (data) {
+    if (Array.isArray(data)) {
       setResults(data);
+    } else if (data.error) {
+      setError(typeof data.error === 'string' ? data.error : JSON.stringify(data.error));
     }
     setIsPending(false);
   }, [props.coordinates]);
@@ -136,6 +140,9 @@ export default function SearchDialog(props) {
             }
           </List>
         )}
+        {error ? (
+          <Alert sx={{ m: 3 }} severity="error">Error: {error}</Alert>
+        ) : null}
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" color="secondary" onClick={handleClose}>Cancel</Button>

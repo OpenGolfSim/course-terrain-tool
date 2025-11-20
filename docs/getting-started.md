@@ -61,3 +61,10 @@ We do our best to automatically detect the CRS of the data when you search or im
 ### Exporting
 Once you have data tiles covering your inner/outer areas, you're ready to export your terrain data. The default settings should work in most cases, but you can experiment and customize with each course.
 
+
+### Notes
+To convert a grayscale PNG/image to raw heightmap:
+
+```bash
+magick shaded.png -depth 16 gray:output.raw
+```
