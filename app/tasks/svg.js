@@ -9,13 +9,14 @@ const FEET_PER_METER = 3.28084;
 const PLAIN_TEXT_PADDING = 10;
 
 function imageTag(size, label, href) {
+  const relativePath = path.join('Overlays', path.basename(href));
   return href ? [
     {
       '@width': size,
       '@height': size,
       '@id': label,
       '@preserveAspectRatio': 'none',
-      '@xlink:href': href
+      '@xlink:href': relativePath
     }
   ] : [];
 }
@@ -46,16 +47,28 @@ export class CreateSVGTask extends BaseTask {
         '@viewBox': `0 0 ${size} ${size}`,
 
         '@sodipodi:docname': 'BaseCourse_Inner.svg',
-        g: {
-          '@inkscape:label': 'Overlays',
-          '@inkscape:groupmode': 'layer',
-          '@id': 'overlays',
-          image: [
-            ...imageTag(size, 'Satellite-Google', googleSat),
-            ...imageTag(size, 'Satellite-Bing', bingSat),
-            ...imageTag(size, 'Hillshade', hillshade),
-          ]
-        }
+        g: [
+          {
+            '@inkscape:label': 'Overlays',
+            '@inkscape:groupmode': 'layer',
+            '@id': 'overlays',
+            image: [
+              ...imageTag(size, 'Satellite-Google', googleSat),
+              ...imageTag(size, 'Satellite-Bing', bingSat),
+              ...imageTag(size, 'Hillshade', hillshade),
+            ]
+          },
+          {
+            '@inkscape:label': 'Course',
+            '@inkscape:groupmode': 'layer',
+            '@id': 'course'
+          },
+          {
+            '@inkscape:label': 'Trees',
+            '@inkscape:groupmode': 'layer',
+            '@id': 'trees'
+          }
+        ]
       }
     };
 
