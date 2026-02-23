@@ -61,10 +61,10 @@ export async function verifyDependencies() {
     const pdalPackage = await verifyCondaPackage(tools.conda, 'pdal');
     tools.pdal = { type: 'conda', bin: pdalPackage }
     const gdalPackage = await verifyCondaPackage(tools.conda, 'gdal');
-    tools.gdal = { type: 'conda', bin: { ...GDAL_BINARIES } };
+    tools.gdal = { type: 'conda', pkg: gdalPackage, bin: { ...GDAL_BINARIES } };
   }
 
-  tools.passed = tools.pdal && tools.gdal ? true : false;
+  tools.passed = !!tools.pdal?.bin && !!tools.gdal?.pkg ? true : false;
 
   if (tools.passed && tools.conda) {
     tools.condaEnv = getCondaEnvironmentPath();
