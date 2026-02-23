@@ -19,7 +19,7 @@ export async function installDependencies(sender) {
       handleError(sender, 'All dependencies have been met. Try restarting the app.');
     }
 
-    const installList = [!tools.gdal && 'gdal', !tools.pdal && 'pdal'].filter(
+    const installList = [!tools.gdal?.pkg && 'gdal', !tools.pdal?.pkg && 'pdal'].filter(
       Boolean
     );
     if (!installList.length) {
